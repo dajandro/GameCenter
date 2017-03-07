@@ -44,7 +44,7 @@ public class WebServer {
             System.out.println(e.getMessage());
         }
         maxThreads = configs.get("MaxThreads");        
-        System.out.println("Server MaxThreads: " + String.valueOf(maxThreads));
+        //System.out.println("Server MaxThreads: " + String.valueOf(maxThreads));
         System.out.println("Listening at port: " + String.valueOf(port));
     }
     
@@ -54,9 +54,9 @@ public class WebServer {
         // Armar partidas
         while (true){
             Socket socket = wq.getSocket();
-            /*SmtpRequest request = new SmtpRequest(socket, wq, id);
+            GameRequest request = new GameRequest(socket);
             Thread thread = new Thread(request);
-            thread.start();*/
+            thread.start();
         }
     }
 }
