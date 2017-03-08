@@ -19,6 +19,7 @@ public class Profile {
     private int x;
     private int y;
     private int score;
+    private boolean end;
 
     public Profile(String name, Color color) {
         this.name = name;
@@ -26,6 +27,7 @@ public class Profile {
         this.x = 0;
         this.y = 0;
         this.score = 0;
+        this.end = false;
     }
 
     public String getName() {
@@ -66,6 +68,14 @@ public class Profile {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public boolean finish() {
+        return end;
+    }
+
+    public void setEnd(boolean end) {
+        this.end = end;
     }
     
 }

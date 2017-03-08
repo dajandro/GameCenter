@@ -92,13 +92,17 @@ public class RequestParser {
             String[] package_parts = request.split(separator);
             Match match = this.all_matches.get(Integer.valueOf(package_parts[1]));
             Profile player = match.getPlayers().get(Integer.valueOf(package_parts[2]));
-            player.setScore(Integer.valueOf(package_parts[3]));            
-            String response = "101";
-            for(Profile playeri: match.getPlayers()){
-                response += this.separator + playeri.getName();
-                response += this.separator + String.valueOf(playeri.getScore());
+            player.setScore(Integer.valueOf(package_parts[3]));
+            boolean end = match.end(Integer.valueOf(package_parts[1]));
+            if (end){
+                System.out.println("S: Match " + String.valueOf(match.getId()) + " end");
+                String response = "101";
+                for(Profile playeri: match.getPlayers()){
+                    response += this.separator + playeri.getName();
+                    response += this.separator + String.valueOf(playeri.getScore());
+                }
+                return response;
             }
-            return response;
         }
         
         return "";

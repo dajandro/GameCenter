@@ -71,7 +71,7 @@ public class Match {
     }
     
     public boolean join(String name, Color color) throws Exception{
-        System.out.println("C: " + name + " trying to join match");
+        System.out.println("S: " + name + " trying to join match");
         synchronized(this){
             if(this.players.size() < max_players){
                 this.players.add(new Profile(name, color));
@@ -86,6 +86,24 @@ public class Match {
                 return true;
             }
             return false;
+        }
+    }
+    
+    public boolean end(int id) throws Exception{
+        Profile player = this.players.get(id);
+        System.out.println("S: " + player.getName() + " end game!");
+        synchronized(this){
+            player.setEnd(true);
+            int end = 0;
+            for(Profile i: this.players)
+                if(i.finish())
+                    end++;
+            if(end == this.players.size()){
+                notifyAll();
+                return true;
+            }
+            wait();
+            return true;
         }
     }
     
