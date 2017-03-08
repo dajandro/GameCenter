@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 public class Match {
     
-    private int max_players = 2;
+    private int max_players = 3;
     private ArrayList<Profile> players;
     private ArrayList<Color> colors;
     private int id;
