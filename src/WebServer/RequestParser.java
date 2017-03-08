@@ -79,7 +79,7 @@ public class RequestParser {
         if(request.startsWith("010")){
             String[] package_parts = request.split(separator);
             for(Match match : this.matches){
-                if(match.getId() == package_parts[1]){
+                if(match.getId() == Integer.parseInt(package_parts[1])){
                     
                 }
             }
