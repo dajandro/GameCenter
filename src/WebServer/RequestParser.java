@@ -50,12 +50,16 @@ public class RequestParser {
             String[] package_parts = request.split(separator);
             // Iniciar partida si no hay una creada
             if(matches.isEmpty()){
+                System.out.println("C: Mathces empty");
                 Match match = new Match(this.id, this.colors);
+                System.out.println("Match added");
+                this.matches.add(match);
                 this.id++;
                 Color color = match.getDispColor();
                 boolean status = match.join(package_parts[1], color);
                 if (!status){
                     this.matches.remove(match);
+                    
                     return "110"+separator+"No hay partidas disponibles, intente de nuevo por favor";
                 }
                 return "001"+separator+String.valueOf(this.id)+separator+String.valueOf(this.getColorId(color))+separator+String.valueOf(this.getColorId(color));
@@ -63,6 +67,7 @@ public class RequestParser {
             // Unirse a una partida
             else{
                 if (!matches.isEmpty()){
+                    System.out.println("C: Created match");
                     Match match = matches.get(0);
                     Color color = match.getDispColor();
                     boolean status = match.join(package_parts[1], color);
@@ -76,14 +81,14 @@ public class RequestParser {
             }
         }
         
-        if(request.startsWith("010")){
+        /*if(request.startsWith("010")){
             String[] package_parts = request.split(separator);
             for(Match match : this.matches){
                 if(match.getId() == Integer.parseInt(package_parts[1])){
                     
                 }
             }
-        }
+        }*/
         
         return "";
     }

@@ -15,11 +15,12 @@ import java.net.Socket;
  */
 public class GameRequest implements Runnable {
     
-    private RequestParser requestParser = new RequestParser();
+    private RequestParser requestParser;
     private Socket socket;
 
-    public GameRequest(Socket socket) {
+    public GameRequest(Socket socket, RequestParser rp) {
         this.socket = socket;
+        this.requestParser = rp;
     } 
 
     @Override
@@ -43,6 +44,8 @@ public class GameRequest implements Runnable {
         }
         catch (Exception e){
             System.err.println(e.getMessage());
+            System.exit(1);
         }
     }
+    
 }
