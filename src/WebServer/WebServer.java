@@ -18,6 +18,7 @@ public class WebServer {
     private int port = 5555;
     private String configFile = "config.txt";
     private int maxThreads = 0;
+    private RequestParser requestParser = new RequestParser();
     
     public WebServer(){
         readConfigFile();
@@ -54,7 +55,7 @@ public class WebServer {
         // Armar partidas
         while (true){
             Socket socket = wq.getSocket();
-            GameRequest request = new GameRequest(socket);
+            GameRequest request = new GameRequest(socket,requestParser);
             Thread thread = new Thread(request);
             thread.start();
         }

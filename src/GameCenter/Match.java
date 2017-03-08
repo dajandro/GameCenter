@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 public class Match {
     
-    private int max_players = 1;
+    private int max_players = 2;
     private ArrayList<Profile> players;
     private ArrayList<Color> colors;
     private int id;
@@ -81,8 +81,8 @@ public class Match {
                     return true;
                     //return false;
                 }
-                while(this.players.size() < max_players)
-                    wait();
+                //while(this.players.size() < max_players)
+                wait();
                 return true;
             }
             return false;
