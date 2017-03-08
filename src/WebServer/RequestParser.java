@@ -55,10 +55,8 @@ public class RequestParser {
                 this.id++;
                 Color color = match.getDispColor();
                 boolean status = match.join(package_parts[1], color);
-                if (status){
-                    this.matches.remove(match);                    
-                    //return "110"+separator+"No hay partidas disponibles, intente de nuevo por favor";
-                }                
+                if (status)
+                    this.matches.remove(match);
                 return "001"+separator+String.valueOf(this.id)+separator+String.valueOf(this.getColorId(color))+separator+String.valueOf(this.getColorId(color));
             }
             // Unirse a una partida
@@ -66,12 +64,9 @@ public class RequestParser {
                 Match match = matches.get(0);
                 Color color = match.getDispColor();
                 boolean status = match.join(package_parts[1], color);
-                if (status){
+                if (status)
                     this.matches.remove(match);
-                    //return "110"+separator+"No hay partidas disponibles, intente de nuevo por favor";
-                }
                 return "001"+separator+String.valueOf(this.id)+separator+String.valueOf(this.getColorId(color))+separator+String.valueOf(this.getColorId(color));
-                //return "110"+separator+"No hay partidas disponibles, intente de nuevo por favor";
             }
         }
         
