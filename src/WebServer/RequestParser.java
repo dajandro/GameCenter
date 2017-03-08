@@ -72,23 +72,31 @@ public class RequestParser {
             }
         }
         // Client dispatch game action
-        if(request.startsWith("010")){
+        else if(request.startsWith("010")){
             String[] package_parts = request.split(separator);
-            Match actual_match = null;
-            for(Match match : this.all_matches){
-                if(match.getId() == Integer.valueOf(package_parts[1])){
-                    actual_match = match;
-                    Profile player = match.getPlayers().get(Integer.valueOf(package_parts[2]));
-                    player.setX(Integer.valueOf(package_parts[3]));
-                    player.setX(Integer.valueOf(package_parts[4]));
-                    player.setScore(Integer.valueOf(package_parts[5]));
-                }
-            }
+            Match match = this.all_matches.get(Integer.valueOf(package_parts[1]));
+            Profile player = match.getPlayers().get(Integer.valueOf(package_parts[2]));
+            player.setX(Integer.valueOf(package_parts[3]));
+            player.setY(Integer.valueOf(package_parts[4]));
+            player.setScore(Integer.valueOf(package_parts[5]));
             String response = "011";
-            for(Profile player: actual_match.getPlayers()){
-                response += this.separator + String.valueOf(this.getColorId(player.getColor()));
-                response += this.separator + String.valueOf(player.getX());
-                response += this.separator + String.valueOf(player.getY());
+            for(Profile playeri: match.getPlayers()){
+                response += this.separator + String.valueOf(this.getColorId(playeri.getColor()));
+                response += this.separator + String.valueOf(playeri.getX());
+                response += this.separator + String.valueOf(playeri.getY());
+            }
+            return response;
+        }
+        // End game
+        else if(request.startsWith("100")){
+            String[] package_parts = request.split(separator);
+            Match match = this.all_matches.get(Integer.valueOf(package_parts[1]));
+            Profile player = match.getPlayers().get(Integer.valueOf(package_parts[2]));
+            player.setScore(Integer.valueOf(package_parts[3]));            
+            String response = "101";
+            for(Profile playeri: match.getPlayers()){
+                response += this.separator + playeri.getName();
+                response += this.separator + String.valueOf(playeri.getScore());
             }
             return response;
         }
