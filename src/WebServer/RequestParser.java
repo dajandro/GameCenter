@@ -80,6 +80,16 @@ public class RequestParser {
                 return "110"+separator+"No hay partidas disponibles, intente de nuevo por favor";
             }
         }
+        
+        /*if(request.startsWith("010")){
+            String[] package_parts = request.split(separator);
+            for(Match match : this.matches){
+                if(match.getId() == package_parts[1]){
+                    
+                }
+            }
+        }*/
+        
         return "";
     }
 }
