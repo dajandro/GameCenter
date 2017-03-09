@@ -17,12 +17,14 @@ import java.util.ArrayList;
 public class RequestParser {
     
     private ArrayList<Match> matches;
+    private ArrayList<Match> all_matches;
     private ArrayList<Color> colors;
     private final String separator = "~";
     private int id;
 
     public RequestParser() {
         this.matches = new ArrayList<>();
+        this.all_matches = new ArrayList<>();
         this.id = 0;
         this.colors = new ArrayList<>();
         this.colors.add(Color.red);
@@ -50,45 +52,59 @@ public class RequestParser {
             String[] package_parts = request.split(separator);
             // Iniciar partida si no hay una creada
             if(matches.isEmpty()){
-                System.out.println("C: Mathces empty");
                 Match match = new Match(this.id, this.colors);
-                System.out.println("Match added");
-                this.matches.add(match);
+                this.matches.add(match); this.all_matches.add(match);
                 this.id++;
                 Color color = match.getDispColor();
                 boolean status = match.join(package_parts[1], color);
-                if (!status){
+                if (status)
                     this.matches.remove(match);
-                    
-                    return "110"+separator+"No hay partidas disponibles, intente de nuevo por favor";
-                }
-                return "001"+separator+String.valueOf(this.id)+separator+String.valueOf(this.getColorId(color))+separator+String.valueOf(this.getColorId(color));
+                return "001"+separator+String.valueOf(match.getId())+separator+String.valueOf(this.getColorId(color))+separator+String.valueOf(this.getColorId(color));
             }
             // Unirse a una partida
             else{
-                if (!matches.isEmpty()){
-                    System.out.println("C: Created match");
-                    Match match = matches.get(0);
-                    Color color = match.getDispColor();
-                    boolean status = match.join(package_parts[1], color);
-                    if (!status){
-                        this.matches.remove(match);
-                        return "110"+separator+"No hay partidas disponibles, intente de nuevo por favor";
-                    }
-                    return "001"+separator+String.valueOf(this.id)+separator+String.valueOf(this.getColorId(color))+separator+String.valueOf(this.getColorId(color));
-                }
-                return "110"+separator+"No hay partidas disponibles, intente de nuevo por favor";
+                Match match = matches.get(0);
+                Color color = match.getDispColor();
+                boolean status = match.join(package_parts[1], color);
+                if (status)
+                    this.matches.remove(match);
+                return "001"+separator+String.valueOf(match.getId())+separator+String.valueOf(this.getColorId(color))+separator+String.valueOf(this.getColorId(color));
             }
         }
-        
-        /*if(request.startsWith("010")){
+        // Client dispatch game action
+        else if(request.startsWith("010")){
             String[] package_parts = request.split(separator);
-            for(Match match : this.matches){
-                if(match.getId() == Integer.parseInt(package_parts[1])){
-                    
-                }
+                 
+            Match match = this.all_matches.get(Integer.valueOf(package_parts[1]));
+            Profile player = match.getPlayers().get(Integer.valueOf(package_parts[2]));
+            player.setX(Integer.valueOf(package_parts[3]));
+            player.setY(Integer.valueOf(package_parts[4]));
+            player.setScore(Integer.valueOf(package_parts[5]));
+            String response = "011";
+            for(Profile playeri: match.getPlayers()){
+                response += this.separator + String.valueOf(this.getColorId(playeri.getColor()));
+                response += this.separator + String.valueOf(playeri.getX());
+                response += this.separator + String.valueOf(playeri.getY());
             }
-        }*/
+            return response;
+        }
+        // End game
+        else if(request.startsWith("100")){
+            String[] package_parts = request.split(separator);
+            Match match = this.all_matches.get(Integer.valueOf(package_parts[1]));
+            Profile player = match.getPlayers().get(Integer.valueOf(package_parts[2]));
+            player.setScore(Integer.valueOf(package_parts[3]));
+            boolean end = match.end(Integer.valueOf(package_parts[1]));
+            if (end){
+                System.out.println("S: Match " + String.valueOf(match.getId()) + " end");
+                String response = "101";
+                for(Profile playeri: match.getPlayers()){
+                    response += this.separator + playeri.getName();
+                    response += this.separator + String.valueOf(playeri.getScore());
+                }
+                return response;
+            }
+        }
         
         return "";
     }
