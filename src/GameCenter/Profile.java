@@ -14,6 +14,7 @@ import java.net.Socket;
  */
 public class Profile {
     
+    private int id;
     private String name;
     private Color color;
     private int x;
@@ -21,7 +22,8 @@ public class Profile {
     private int score;
     private boolean end;
 
-    public Profile(String name, Color color) {
+    public Profile(int id, String name, Color color) {
+        this.id = id;
         this.name = name;
         this.color = color;
         this.x = 0;
@@ -76,6 +78,14 @@ public class Profile {
 
     public void setEnd(boolean end) {
         this.end = end;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
     
 }

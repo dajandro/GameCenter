@@ -56,10 +56,10 @@ public class RequestParser {
                 this.matches.add(match); this.all_matches.add(match);
                 this.id++;
                 Color color = match.getDispColor();
-                boolean status = match.join(package_parts[1], color);
+                boolean status = match.join(this.getColorId(color), package_parts[1], color);
                 if (status)
                     this.matches.remove(match);
-                String response = "001" + this.separator + String.valueOf(this.getColorId(color));;
+                String response = "001" + this.separator + match.getId() + this.separator + String.valueOf(this.getColorId(color));;
                 for(Profile playeri: match.getPlayers()){
                     if (this.getColorId(playeri.getColor()) != this.getColorId(color))
                         response += this.separator + String.valueOf(this.getColorId(playeri.getColor()));
@@ -71,10 +71,10 @@ public class RequestParser {
             else{
                 Match match = matches.get(0);
                 Color color = match.getDispColor();
-                boolean status = match.join(package_parts[1], color);
+                boolean status = match.join(this.getColorId(color), package_parts[1], color);
                 if (status)
                     this.matches.remove(match);
-                String response = "001" + this.separator + String.valueOf(this.getColorId(color));;
+                String response = "001" + this.separator + match.getId() + this.separator + String.valueOf(this.getColorId(color));;
                 for(Profile playeri: match.getPlayers()){
                     if (this.getColorId(playeri.getColor()) != this.getColorId(color))
                         response += this.separator + String.valueOf(this.getColorId(playeri.getColor()));
@@ -87,7 +87,14 @@ public class RequestParser {
         else if(request.startsWith("010")){
             String[] package_parts = request.split(separator);
             Match match = this.all_matches.get(Integer.valueOf(package_parts[1]));
-            Profile player = match.getPlayers().get(Integer.valueOf(package_parts[2]));
+            Profile player = null;
+            for(Profile i: match.getPlayers())
+                if (i.getId() == Integer.valueOf(package_parts[2])){
+                    player = i;
+                    break;
+                }
+            //Profile player = match.getPlayers().get(Integer.valueOf(package_parts[2]));
+            //Prifile player = match.getPlayers().get(this.colors.indexOf);
             player.setX(Integer.valueOf(package_parts[3]));
             player.setY(Integer.valueOf(package_parts[4]));
             player.setScore(Integer.valueOf(package_parts[5].trim()));
@@ -104,13 +111,19 @@ public class RequestParser {
         }
         // End game
         else if(request.startsWith("100")){
-            String[] package_parts = request.split(separator);
+            String[] package_parts = request.split(separator);            
             Match match = this.all_matches.get(Integer.valueOf(package_parts[1]));
-            Profile player = match.getPlayers().get(Integer.valueOf(package_parts[2]));
+            //Profile player = match.getPlayers().get(this.getColorId(Integer.valueOf(package_parts[2])));
+            //System.out.println("S: " + player.getName() + " ends");
+            Profile player = null;
+            for(Profile i: match.getPlayers())
+                if (i.getId() == Integer.valueOf(package_parts[2])){
+                    player = i;
+                    break;
+                }
             player.setScore(Integer.valueOf(package_parts[3].trim()));
-            boolean end = match.end(Integer.valueOf(package_parts[1]));
-            if (end){
-                System.out.println("S: Match " + String.valueOf(match.getId()) + " end");
+            boolean end = match.end(match, player);
+            if (end){                
                 String response = "101";
                 for(Profile playeri: match.getPlayers()){
                     response += this.separator + playeri.getName();

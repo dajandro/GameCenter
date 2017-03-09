@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 public class Match {
     
-    private int max_players = 2;
+    private int max_players = 3;
     private ArrayList<Profile> players;
     private ArrayList<Color> colors;
     private int id;
@@ -70,11 +70,11 @@ public class Match {
         this.id = id;
     }
     
-    public boolean join(String name, Color color) throws Exception{
+    public boolean join(int id, String name, Color color) throws Exception{
         System.out.println("S: " + name + " trying to join match");
         synchronized(this){
             if(this.players.size() < max_players){
-                this.players.add(new Profile(name, color));
+                this.players.add(new Profile(id, name, color));
                 // Despertar a los que estaban esperando match
                 if (this.players.size() == max_players){
                     notifyAll();
@@ -89,8 +89,8 @@ public class Match {
         }
     }
     
-    public boolean end(int id) throws Exception{
-        Profile player = this.players.get(id);
+    public boolean end(Match match, Profile player) throws Exception{
+        //Profile player = this.players.get(id);        
         System.out.println("S: " + player.getName() + " end game!");
         synchronized(this){
             player.setEnd(true);
