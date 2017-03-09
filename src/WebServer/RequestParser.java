@@ -59,7 +59,13 @@ public class RequestParser {
                 boolean status = match.join(package_parts[1], color);
                 if (status)
                     this.matches.remove(match);
-                return "001"+separator+String.valueOf(match.getId())+separator+String.valueOf(this.getColorId(color))+separator+String.valueOf(this.getColorId(color));
+                String response = "001" + this.separator + String.valueOf(this.getColorId(color));;
+                for(Profile playeri: match.getPlayers()){
+                    if (this.getColorId(playeri.getColor()) != this.getColorId(color))
+                        response += this.separator + String.valueOf(this.getColorId(playeri.getColor()));
+                }
+                return response;
+                //return "001"+separator+String.valueOf(match.getId())+separator+String.valueOf(this.getColorId(color))+separator+String.valueOf(this.getColorId(color));
             }
             // Unirse a una partida
             else{
@@ -68,7 +74,13 @@ public class RequestParser {
                 boolean status = match.join(package_parts[1], color);
                 if (status)
                     this.matches.remove(match);
-                return "001"+separator+String.valueOf(match.getId())+separator+String.valueOf(this.getColorId(color))+separator+String.valueOf(this.getColorId(color));
+                String response = "001" + this.separator + String.valueOf(this.getColorId(color));;
+                for(Profile playeri: match.getPlayers()){
+                    if (this.getColorId(playeri.getColor()) != this.getColorId(color))
+                        response += this.separator + String.valueOf(this.getColorId(playeri.getColor()));
+                }
+                return response;
+                //return "001"+separator+String.valueOf(match.getId())+separator+String.valueOf(this.getColorId(color))+separator+String.valueOf(this.getColorId(color));
             }
         }
         // Client dispatch game action
@@ -79,12 +91,15 @@ public class RequestParser {
             Profile player = match.getPlayers().get(Integer.valueOf(package_parts[2]));
             player.setX(Integer.valueOf(package_parts[3]));
             player.setY(Integer.valueOf(package_parts[4]));
-            player.setScore(Integer.valueOf(package_parts[5]));
+            player.setScore(Integer.valueOf(package_parts[5].trim()));
             String response = "011";
             for(Profile playeri: match.getPlayers()){
-                response += this.separator + String.valueOf(this.getColorId(playeri.getColor()));
-                response += this.separator + String.valueOf(playeri.getX());
-                response += this.separator + String.valueOf(playeri.getY());
+                if (this.getColorId(playeri.getColor()) != this.getColorId(player.getColor())){
+                    response += this.separator + String.valueOf(this.getColorId(playeri.getColor()));
+                    response += this.separator + String.valueOf(playeri.getX());
+                    response += this.separator + String.valueOf(playeri.getY());
+                    response += this.separator + String.valueOf(playeri.getScore());
+                }
             }
             return response;
         }
@@ -93,7 +108,7 @@ public class RequestParser {
             String[] package_parts = request.split(separator);
             Match match = this.all_matches.get(Integer.valueOf(package_parts[1]));
             Profile player = match.getPlayers().get(Integer.valueOf(package_parts[2]));
-            player.setScore(Integer.valueOf(package_parts[3]));
+            player.setScore(Integer.valueOf(package_parts[3].trim()));
             boolean end = match.end(Integer.valueOf(package_parts[1]));
             if (end){
                 System.out.println("S: Match " + String.valueOf(match.getId()) + " end");
@@ -106,6 +121,6 @@ public class RequestParser {
             }
         }
         
-        return "";
+        return "111";
     }
 }
